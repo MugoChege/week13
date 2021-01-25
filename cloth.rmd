@@ -1,0 +1,168 @@
+# 1. BUSINESS UNDERSTANDING
+## a. Defining the question
+## b. Defining the metric of success
+## c. Understading the context
+## d. Recording the experimental design
+## e. Data Relevance
+## f. Appropriateness of the data
+# 2. DATA AQUISITION AND EXTRACTION, TRANSFORMING AND LOADING
+## a. Importing of the libraries
+```{r}
+library(data.table)
+```
+## b. Reading the dataset
+
+```{r}
+clo <- fread('http://bit.ly/EcommerceCustomersDataset')
+```
+
+```{r}
+head(clo, 10)
+```
+```{r}
+tail(clo,10)
+```
+##c. Checking the dataset
+```{r}
+dim(clo)
+```
+```{r}
+print(colnames(clo))
+```
+```{r}
+summary(clo)
+```
+## d. Data understanding
+```{r}
+majinazacolumns <- colnames(clo)
+madarasazacolumns <- c()
+eunikiwacolumn <- c()
+for (r in majinazacolumns){
+  madarasazacolumns <- c(madarasazacolumns , class(clo[[r]]))
+  eunikiwacolumn <- c(eunikiwacolumn , length(unique(clo[[r]])))
+}
+
+desc <- data.frame(
+  "Column name" = majinazacolumns,
+  "Data Type" = madarasazacolumns,
+  "Number of unique columns" = eunikiwacolumn 
+)
+desc
+```
+Administrative - This is a numerical representation of the site.
+Administrative_Duration - The amount of time that is spent on the site
+Informational - A numerical representation of a site that has information
+Informational_Duration - The amount of time that is spent on the information site
+ProductRelated - A numerical representation of the site that has the product information
+ProductRelated_Duration  - The amount of time that is spent on the product information site.
+BounceRates 
+ExitRates 
+PageValues 
+SpecialDay 
+Month -
+OperatingSystems -  
+Browser -
+Region 
+TrafficType 
+VisitorType 
+Weekend 
+Revenue 
+
+
+## e. Data preparation
+### Data Cleaning
+####  i.) Missing Data
+```{r}
+colSums(is.na(clo))
+```
+```{r}
+clo <- na.omit(clo)
+```
+#### ii.) Duplicate handling
+```{r}
+col <- unique(clo)
+```
+#### iii.) Obvious Inconsistencies
+
+
+
+
+
+
+
+
+```{r}
+mezayanambari <- desc[desc$Data.Type == 'integer' | desc$Data.Type == 'numeric',]
+print(mezayanambari)
+```
+
+```{r}
+clo[clo$Administrative_Duration == -1]
+```
+
+```{r}
+negativecheck = c('Administrative_Duration', 'Informational_Duration' , 'ProductRelated_Duration')
+w = negativecheck
+for (b in 1:3){
+  wer = clo[clo$w[b] != -1]
+  cat ('Dropped: ' , w[b], '\n')
+  w1 = w[-b]
+  print (dim(wer[wer$w1[1] != 1]))
+  print (dim(wer[wer$w1[2] != 1]))
+  cat('\n')
+}
+```
+##f. Anomalies
+```{r}
+tofactor <- c('OperatingSystems', 'Browser', 'Region', 'TrafficType', 'Administrative', 'Informational', 'ProductRelated')
+for (lk in tofactor){
+  clo[[lk]] <- as.factor(clo[[lk]])
+}
+```
+
+```{r}
+majinazacolumns <- colnames(clo)
+madarasazacolumns <- c()
+eunikiwacolumn <- c()
+for (r in majinazacolumns){
+  madarasazacolumns <- c(madarasazacolumns , class(clo[[r]]))
+  eunikiwacolumn <- c(eunikiwacolumn , length(unique(clo[[r]])))
+}
+
+desc <- data.frame(
+  "Column name" = majinazacolumns,
+  "Data Type" = madarasazacolumns,
+  "Number of unique columns" = eunikiwacolumn 
+)
+desc
+```
+## g. Outliers
+```{r}
+mezayanambari <- desc[desc$Data.Type == 'integer' | desc$Data.Type == 'numeric',]
+nambari = mezayanambari$Column.name
+for (t in nambari){
+  boxplot(col[[t]] , main = t)
+}
+
+```
+## g. Exploratory Data Analysis
+### i.) Univariate Data Analysis
+```{r}
+#central tendency
+
+numericalcolumns <- mezayanambari$Column.name
+centr <- data.frame(
+	'Mean' = apply(clo[, ..numericalcolumns] , 2 , mean),
+	'Median' = apply(clo[, ..numericalcolumns], 2 , median),
+	#Mode = apply(dt[,1:4], 2 , mode),
+	'Maximum' = apply(clo[, ..numericalcolumns], 2 , max),
+	'Minimum' = apply(clo[, ..numericalcolumns], 2 , min),
+	'Standard Deviation' = apply(clo[, ..numericalcolumns], 2 , sd),
+	'Variance' = apply(clo[, ..numericalcolumns], 2 , var)
+	)
+centr
+```
+### ii.) Bivariate Data Analysis
+### iii.) Multivariate Data Analysis
+
+# 3. MODELLING
